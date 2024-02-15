@@ -1,8 +1,11 @@
 from utils.slot_variables import spin
-from utils.helper_functions import add_winnings, bonus_round, horizontal_line_win
-from utils.user_variables import add_deposit, withdraw, balance, define_bet
+from utils.helper_functions import add_winnings, bonus_round
+from utils.user_variables import add_deposit, withdraw, define_bet
+from db.sql import db_main, update_balance_in_db
 
+balance, username = db_main()
 total_bet = define_bet(balance)
+
 
 # getting all winnings from the spin result ...
 def winnings(symbols, symbols_per_line, balance, total_bet):
@@ -178,6 +181,8 @@ def winnings(symbols, symbols_per_line, balance, total_bet):
                 print("You won on symbol " + symbol + " < - > " + message + ", payout:",payout)
 
         balance += amount_won
+        update_balance_in_db(username, balance)
+
         return True, balance
     else:
         balance -= total_bet
@@ -190,7 +195,7 @@ def main(balance, total_bet):
 
         print("Balance: ", balance)
 
-        user_choice = input("do you want to spin? y / n / c to change bet size / d to deposit funds / w to withdraw funds ")
+        user_choice = input("do you want to spin? y / n / c to change bet size / d to deposit funds / w to withdraw funds: ")
 
         if user_choice == "c":
             total_bet = define_bet(balance)
@@ -199,6 +204,7 @@ def main(balance, total_bet):
             try:
                 amount = int(amount)
                 balance = add_deposit(balance, amount)
+                update_balance_in_db(username, balance)
             except ValueError:
                 print("Please enter a valid number for bet size and lines")
 
@@ -207,6 +213,7 @@ def main(balance, total_bet):
             try:
                 amount = int(amount)
                 balance = withdraw(balance, amount)
+                update_balance_in_db(username, balance)
             except ValueError:
                 print("Please enter a valid number for bet size and lines")
 
