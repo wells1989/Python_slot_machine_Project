@@ -241,8 +241,9 @@ def main(balance, total_bet):
                     try:
                         amount = int(amount)
                         balance = add_deposit(balance, amount)
+                        update_balance_in_db(username, balance)
                     except ValueError:
-                        print("Please enter a valid number for bet size and lines")
+                        print("Please enter a valid number")
 
 
 main(balance, total_bet)
