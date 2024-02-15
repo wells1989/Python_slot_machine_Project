@@ -1,5 +1,10 @@
 import sqlite3
 import bcrypt
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+import os
 
 # checking if the user exists
 def user_exists(username):
@@ -8,6 +13,29 @@ def user_exists(username):
     user = cursor.fetchone()
     conn.close()
     return user is not None
+
+# Load variables from .env into os.environ
+load_dotenv()
+
+def send_email(user_email, subject,body):
+    smtp_server = os.environ.get("smtp_server")
+    smtp_port = os.environ.get("smtp_port")
+    sender_email = os.environ.get("sender_email")
+    sender_password = os.environ.get("sender_password")
+
+    # creating the message
+    message = MIMEMultipart() # creates an email message object
+    message['From'] = sender_email
+    message['To'] = user_email
+    message['Subject'] = subject
+    message.attach(MIMEText(body, 'html'))
+
+    # setting up connection to SMTP server
+    with smtplib.SMTP(smtp_server, smtp_port) as server: # opens a connection to the stmp server
+        server.starttls() # starts secure connection using tls (Transport Level Security)
+        server.login(sender_email, sender_password) # logs into server using the above password and email etc
+        server.sendmail(sender_email, user_email, message.as_string()) # sends the message converted to a string
+
 
 # authenticating user password
 def authenticate_user(username):
@@ -26,6 +54,7 @@ def authenticate_user(username):
 
         if password_attempts >= 3:
             print("too many attempts")
+            send_email(user[3], "Account Security Alert", "<h2 style="">Important Message</h2><br><p>Too many password attempts for our site. If it was you please contact us to confirm your identity</p>")
             quit() # quits the overall program
         password = input("please enter your password: ")
 

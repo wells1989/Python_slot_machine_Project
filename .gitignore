@@ -1,0 +1,6 @@
+.env
+
+# Ignore the __pycache__ directory within the utils directory
+utils/__pycache__/
+
+drafts/
