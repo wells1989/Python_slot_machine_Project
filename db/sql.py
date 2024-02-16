@@ -37,9 +37,38 @@ def send_email(user_email, subject,body):
         server.sendmail(sender_email, user_email, message.as_string()) # sends the message converted to a string
 
 
+# switches the user from blocked to unblocked to stop them from logging in / allow them to log in
+def switch__user_block(username):
+    conn = sqlite3.connect('user_database.db')
+    cursor = conn.execute('SELECT * from users WHERE username = ?;', (username,))
+    user = cursor.fetchone()
+
+    if user[5] == 1:
+        conn.execute('UPDATE users SET User_Blocked = ? WHERE username = ?;', (0, username,))
+    elif user[5] == 0:
+        conn.execute('UPDATE users SET User_Blocked = ? WHERE username = ?;', (1, username,))
+
+    conn.commit()
+    conn.close()
+
+
+def is_user_blocked(username):
+    conn = sqlite3.connect('user_database.db')
+    cursor = conn.execute('SELECT * from users WHERE username = ?;', (username,))
+    user = cursor.fetchone()
+    conn.close()
+
+    return user[5] == 1
+    
+
 # authenticating user password
 def authenticate_user(username):
     conn = sqlite3.connect('user_database.db')
+
+    if is_user_blocked(username):
+        print("Your account has been blocked due to multiple failed password attempts, please get in touch to unblock it")
+        quit()
+
     password = input("please enter your password: ")
     cursor = conn.execute('SELECT * FROM users WHERE username = ?;', (username,))
     user = cursor.fetchone()
@@ -55,6 +84,7 @@ def authenticate_user(username):
         if password_attempts >= 3:
             print("too many attempts")
             send_email(user[3], "Account Security Alert", "<h2 style="">Important Message</h2><br><p>Too many password attempts for our site. If it was you please contact us to confirm your identity</p>")
+            switch__user_block(username)
             quit() # quits the overall program
         password = input("please enter your password: ")
 
@@ -62,6 +92,28 @@ def authenticate_user(username):
     if bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password):
         print("Authentication successful")
         return True
+
+
+# password_reset_email .... NOTE: Dummy reset_link for dev only
+def send_password_reset_email(username):
+    conn = sqlite3.connect('user_database.db')
+    cursor = conn.execute('SELECT * FROM users WHERE username = ?;', (username,))
+    user = cursor.fetchone()
+    conn.close()
+
+    reset_link = f"http://your_app_domain/reset_password?username={user[1]}"
+    send_email(user[3], "Password Reset", f"<h2>Resetting your password</h2><br><p>You have requested to change your password, via the below link. If you did not request this contact us immediately</p></br><a href={reset_link}>Click here</a>")
+    
+
+# changing password based on above (dev only as would need a domain name for the request)
+def change_password(username):
+    new_password = input("enter new password: ")
+    new_password_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+    conn = sqlite3.connect('user_database.db')
+    conn.execute('UPDATE USERS SET password = ? WHERE username = ?;', (new_password_hashed, username,))
+    print("password changed successfully")
+    conn.commit()
+    conn.close()
 
 
 # new user creation
@@ -109,11 +161,13 @@ def db_main():
         username TEXT UNIQUE NOT NULL,
         balance INTEGER NOT NULL DEFAULT 0,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        User_Blocked BOOLEAN DEFAULT FALSE
     );
     ''')
     conn.commit()
     conn.close()
+
 
     # Create a new user with an initial balance of 0
     username = input("Enter username for the user: ")
@@ -133,6 +187,10 @@ def db_main():
             cursor = conn.execute('SELECT * FROM users WHERE username = ?;', (username,))
             user = cursor.fetchone()
 
+            password_change_option = input("If you want to change your password click c: ")
+            if password_change_option == "c":
+                change_password(username)
+
             return balance, user[1]
     
 
@@ -150,7 +208,7 @@ def view_users():
     
     print("User Information:")
     for row in cursor.fetchall():
-        print(f"ID: {row[0]}, Username: {row[1]}, balance: {row[2]}, email: {row[3]}, password: {row[4]}")
+        print(f"ID: {row[0]}, Username: {row[1]}, balance: {row[2]}, email: {row[3]}, password: {row[4]}, User_Blocked: {row[5]}")
         # e.g. ID: 1, Username: paul, balance: 110, email: wells@gmail.com, password: b'$2bvLO/2qWwMMPyK'
     conn.close()
 

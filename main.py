@@ -6,7 +6,6 @@ from db.sql import db_main, update_balance_in_db
 balance, username = db_main()
 total_bet = define_bet(balance)
 
-
 # getting all winnings from the spin result ...
 def winnings(symbols, symbols_per_line, balance, total_bet):
     amount_won = 0
