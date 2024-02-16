@@ -25,13 +25,19 @@ def spin():
         
     random.shuffle(options)
 
-    symbols = [
-        ['f', 'f', 'f'],
-        ['b', 'd', 'a'],
-        ['a', 'c', 'a']
+    """symbols = [
+        ['f', 'b', 'f'],
+        ['a', '*', 'a'],
+        ['b', 'f', 'b']
+    ]"""
+
+    winning_symbols = [
+        ['X', 'X', 'X'],
+        ['X', 'X', 'X'],
+        ['X', 'X', 'X']
     ]
 
-    """symbols=[]
+    symbols=[]
 
     for i in range(0, vertical_lines):
         symbols.append([])
@@ -40,9 +46,9 @@ def spin():
 
             symbols[i].append(random.choice(options))
 
-    # now e.g. symbols = [['d', 'd', 'e'], ['a', 'd', 'c'], ['*', 'd', 'b']]"""
+    # now e.g. symbols = [['d', 'd', 'e'], ['a', 'd', 'c'], ['*', 'd', 'b']]
     
     for i in range(0, len(symbols)):
         print(symbols[i])
     
-    return symbols, symbols_per_line
+    return symbols, symbols_per_line, winning_symbols

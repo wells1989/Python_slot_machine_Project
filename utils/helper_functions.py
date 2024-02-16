@@ -34,7 +34,7 @@ def bonus_round(total_bet):
         exit_chance + random.randint(1, 10)
         bonus_winnings += value
         print("you have won", value)
-        print("total winnings:", bonus_winnings)
+        print("total Bonus win:", bonus_winnings)
         
         if exit_chance >= 30 or len(random_values) <= 5:
             break
