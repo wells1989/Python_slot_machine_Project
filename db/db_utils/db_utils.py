@@ -94,6 +94,7 @@ def authenticate_user(username):
 
     if is_user_blocked(username):
         print("Your account has been blocked due to multiple failed password attempts, please get in touch to unblock it")
+        send_password_reset_email(username)
         quit()
 
     password = input("please enter your password: ")
