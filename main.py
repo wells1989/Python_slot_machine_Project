@@ -72,7 +72,7 @@ def main():
                 user_input = input("press q to quit or d to deposit funds: ")
                 if user_input == "q":
                     print("leaving game")
-                    quit
+                    quit()
                 elif user_input == "d":
                     amount = input("how much do you want to deposit? ")
                     try:
