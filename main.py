@@ -8,6 +8,15 @@ def main():
     # User log in and authentication
     balance, username = db_main()
 
+    if balance == 0:
+        amount = input("Insufficient funds. Need to deposit to play, enter deposit amount: ")
+        try:
+            amount = float(amount)
+            balance = add_deposit(balance, amount)
+            update_balance_in_db(username, balance)
+        except ValueError:
+            print("Please enter a valid number")
+
     # User setting total_bet
     total_bet = define_bet(balance)
 
@@ -22,20 +31,28 @@ def main():
         elif user_choice == "d":
             amount = input("how much do you want to deposit? ")
             try:
-                amount = int(amount)
+                amount = float(amount)
                 balance = add_deposit(balance, amount)
                 update_balance_in_db(username, balance)
             except ValueError:
-                print("Please enter a valid number for bet size and lines")
+                print("Please enter a valid number")
 
         elif user_choice == "w":
-            amount = input("how much do you want to withdraw? ")
-            try:
-                amount = int(amount)
-                balance = withdraw(balance, amount)
-                update_balance_in_db(username, balance)
-            except ValueError:
-                print("Please enter a valid number for bet size and lines")
+            while True:
+                try:
+                    amount = float(input("how much do you want to withdraw? "))
+
+                    if amount > balance:
+                        print(f'unable to withdraw {amount}, current balance is {balance}')
+                    else:
+                        break
+                except ValueError:
+                    print("Please enter a valid number")
+
+            
+            balance = withdraw(balance, amount)
+            update_balance_in_db(username, balance)
+            
 
         elif user_choice == "n":
             print("leaving game")
@@ -64,7 +81,6 @@ def main():
                         update_balance_in_db(username, balance)
                     except ValueError:
                         print("Please enter a valid number")
-
 
 main()
 
