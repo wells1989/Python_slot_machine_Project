@@ -310,7 +310,7 @@ def winnings(symbols, symbols_per_line, balance, total_bet, winning_symbols, use
 
     # adding all winnings to balance and updating db
     if amount_won:
-        print("\n you have won", amount_won, "\n")
+        print(f'\n you have won {amount_won} \n')
 
         for i in range(0, len(winning_symbols)):
             print(winning_symbols[i])
@@ -321,7 +321,7 @@ def winnings(symbols, symbols_per_line, balance, total_bet, winning_symbols, use
 
                 symbol, message, payout = separate_list
 
-                print("You won on symbol " + symbol.upper() + message + ", payout:",payout)
+                print(f'You won on symbol {symbol.upper()} {message}, Payout: {payout}') # "You won on symbol " + symbol.upper() + message + ", payout:",payout
 
         balance += amount_won
         update_balance_in_db(username, balance)

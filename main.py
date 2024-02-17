@@ -22,7 +22,7 @@ def main():
 
     while True:
 
-        print("Balance: ", balance)
+        print(f'Balance: {balance}')
 
         user_choice = input("do you want to spin? y / n / c to change bet size / d to deposit funds / w to withdraw funds: ")
 
