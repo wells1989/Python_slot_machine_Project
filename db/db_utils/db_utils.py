@@ -25,7 +25,6 @@ def create_user(username, deposit):
 
     conn.commit()
 
-    # Retrieve the updated user information
     cursor = conn.execute('SELECT * FROM users WHERE username = ?;', (username,))
     user = cursor.fetchone()
 
@@ -79,6 +78,7 @@ def switch__user_block(username):
     conn.close()
 
 
+# returns true if user is blocked i.e. User_Blocked value is True / 1
 def is_user_blocked(username):
     conn = sqlite3.connect('user_database.db')
     cursor = conn.execute('SELECT * from users WHERE username = ?;', (username,))
@@ -128,17 +128,17 @@ def send_email(user_email, subject,body):
     sender_password = os.environ.get("sender_password")
 
     # creating the message
-    message = MIMEMultipart() # creates an email message object
+    message = MIMEMultipart()
     message['From'] = sender_email
     message['To'] = user_email
     message['Subject'] = subject
     message.attach(MIMEText(body, 'html'))
 
     # setting up connection to SMTP server
-    with smtplib.SMTP(smtp_server, smtp_port) as server: # opens a connection to the stmp server
-        server.starttls() # starts secure connection using tls (Transport Level Security)
-        server.login(sender_email, sender_password) # logs into server using the above password and email etc
-        server.sendmail(sender_email, user_email, message.as_string()) # sends the message converted to a string
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, user_email, message.as_string())
     
 
 # password_reset_email .... NOTE: Dummy reset_link for dev only

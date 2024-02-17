@@ -19,8 +19,6 @@ def db_main():
     conn.commit()
     conn.close()
 
-
-    # Create a new user with an initial balance of 0
     username = input("Enter username for the user: ")
 
     if not user_exists(username):
