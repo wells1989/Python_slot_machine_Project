@@ -6,6 +6,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
+# Load variables from .env into os.environ
+load_dotenv()
 
 ## USER LOGIC
 
@@ -119,10 +121,6 @@ def authenticate_user(username):
         return True
 
 
-# Load variables from .env into os.environ
-load_dotenv()
-
-
 def send_email(user_email, subject,body):
     smtp_server = os.environ.get("smtp_server")
     smtp_port = os.environ.get("smtp_port")
@@ -158,11 +156,17 @@ def send_password_reset_email(username):
 def change_password(username):
     new_password = input("enter new password: ")
     new_password_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
     conn = sqlite3.connect('user_database.db')
+    cursor = conn.execute('SELECT * from users WHERE username = ?;', (username,))
+    user = cursor.fetchone()
+
+    if user[5] == 1:
+        switch__user_block(username)
+
     conn.execute('UPDATE USERS SET password = ? WHERE username = ?;', (new_password_hashed, username,))
     print("password changed successfully")
     conn.commit()
-    conn.close()
 
 
 ## DEV ONLY (viewing users)
