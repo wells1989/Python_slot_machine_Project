@@ -20,7 +20,7 @@ def main():
     # User setting total_bet
     total_bet = define_bet(balance)
 
-    while True and balance >= total_bet:
+    while True:
 
         print("Balance: ", balance)
 

@@ -235,7 +235,7 @@ def winnings(symbols, symbols_per_line, balance, total_bet, winning_symbols, use
 
             winning_messages += [winning_symbol, " \\ - / Long W-shaped Line", winnings]    
     
-    # reverse Long w shaped
+    # reverse w shaped
             """    b  b  b      
                 b           b  """
     for i in range(1, len(symbols)):
@@ -256,7 +256,7 @@ def winnings(symbols, symbols_per_line, balance, total_bet, winning_symbols, use
 
             winning_messages += [winning_symbol, " / - \\ Reverse Long W-shaped Line", winnings]  
 
-    # V / short W shaped
+    # V shaped
             """ e.g.
                 ["F", "C", "F"],    
                 ["e", "*", "b"],
@@ -329,4 +329,5 @@ def winnings(symbols, symbols_per_line, balance, total_bet, winning_symbols, use
         return True, balance
     else:
         balance -= total_bet
+        update_balance_in_db(username, balance)
         return False, balance
