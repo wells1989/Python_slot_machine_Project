@@ -1,6 +1,5 @@
-balance = 20
-
 """ dev only
+balance = 20
 bet_size = 1
 bet_coins = 1
 total_bet = 4"""
@@ -18,7 +17,7 @@ def define_bet(balance):
             continue
 
         if total_bet > balance:
-            print("insufficient funds")
+            print(f'insufficient funds, current balance is {balance}')
         else:
             break
     
@@ -32,9 +31,7 @@ def add_deposit(balance, amount):
     print("new balance after deposit: ", balance)
     return balance
 
-
 def withdraw(balance, amount):
     balance -= amount
     print("new balance after withdrawal: ", balance)
     return balance
-

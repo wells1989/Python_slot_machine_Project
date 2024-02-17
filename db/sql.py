@@ -22,9 +22,9 @@ def db_main():
 
     # Create a new user with an initial balance of 0
     username = input("Enter username for the user: ")
-    deposit = input("Enter deposit amount: ")
 
     if not user_exists(username):
+        deposit = input("Enter deposit amount: ")
         user = create_user(username, deposit)
         print(f"Username: {user[1]}, with a balance of: {user[2]}")
         balance = get_user_balance(username)
@@ -35,8 +35,10 @@ def db_main():
         if authenticate_user(username):
             balance = get_user_balance(username)
             conn = sqlite3.connect('user_database.db')
+            
             cursor = conn.execute('SELECT * FROM users WHERE username = ?;', (username,))
             user = cursor.fetchone()
+            conn.close()
 
             password_change_option = input("If you want to change your password click c: ")
             if password_change_option == "c":
