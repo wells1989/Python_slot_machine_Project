@@ -13,7 +13,7 @@ This python slot machine allows logged in and authenticated users to manage thei
 
 **Tech-stack: python / SQLite / Bcrypt / smtplib / HTML5**
 
-**Project Areas: User login + authentication with bcrypt and password hashing, email security updates with account blocking features, SQLite database management and integration, dynamic programming including varied payouts and bonus round megawins **
+**Project Areas: User login + authentication with bcrypt and password hashing, email security updates with account blocking features, SQLite database management and integration, dynamic programming including varied payouts and bonus round megawins**
 
 ## Installation
 
